@@ -4,7 +4,6 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Header from '@/components/Header';
 import { useAuth } from '@/hooks/useAuth';
-import { useGestionPagos } from '@/hooks/useGestionPagos';
 import { useGestionPagosSimple } from '@/hooks/useGestionPagosSimple';
 
 export default function GestionPagos() {
@@ -45,58 +44,16 @@ export default function GestionPagos() {
   }
 
   // Funciones para eliminar con manejo de errores y confirmación
-  const handleEliminarSaldo = async (id: number) => {
+  const handleEliminarSaldo = async () => {
     alert('Función de eliminar temporalmente deshabilitada para debug');
-    // if (!user) {
-    //   alert('Debes iniciar sesión para realizar esta acción');
-    //   return;
-    // }
-    
-    // if (!confirm('¿Estás seguro de que quieres eliminar este saldo?')) return;
-    
-    // try {
-    //   await eliminarSaldo(id);
-    //   alert('Saldo eliminado correctamente');
-    // } catch (error) {
-    //   alert('Error al eliminar el saldo');
-    //   console.error(error);
-    // }
   };
 
-  const handleEliminarHistorial = async (id: number) => {
+  const handleEliminarHistorial = async () => {
     alert('Función de eliminar temporalmente deshabilitada para debug');
-    // if (!user) {
-    //   alert('Debes iniciar sesión para realizar esta acción');
-    //   return;
-    // }
-    
-    // if (!confirm('¿Estás seguro de que quieres eliminar este registro?')) return;
-    
-    // try {
-    //   await eliminarHistorial(id);
-    //   alert('Registro eliminado correctamente');
-    // } catch (error) {
-    //   alert('Error al eliminar el registro');
-    //   console.error(error);
-    // }
   };
 
-  const handleEliminarPagoWeb = async (id: number) => {
+  const handleEliminarPagoWeb = async () => {
     alert('Función de eliminar temporalmente deshabilitada para debug');
-    // if (!user) {
-    //   alert('Debes iniciar sesión para realizar esta acción');
-    //   return;
-    // }
-    
-    // if (!confirm('¿Estás seguro de que quieres eliminar este pago?')) return;
-    
-    // try {
-    //   await eliminarPagoWeb(id);
-    //   alert('Pago eliminado correctamente');
-    // } catch (error) {
-    //   alert('Error al eliminar el pago');
-    //   console.error(error);
-    // }
   };
   
   // Paginación para Historial
@@ -160,17 +117,17 @@ export default function GestionPagos() {
                 </thead>
                 <tbody>
                   {saldos.length > 0 ? (
-                    saldos.map((saldo: any) => (
-                      <tr key={saldo.id} className="border-b border-gray-800">
-                        <td className="text-white py-3">{saldo.remitente}</td>
-                        <td className="text-green-400 py-3 font-medium">${saldo.monto.toLocaleString()}</td>
+                    saldos.map((saldo: unknown) => (
+                      <tr key={(saldo as Record<string, unknown>).id as string} className="border-b border-gray-800">
+                        <td className="text-white py-3">{(saldo as Record<string, unknown>).remitente as string}</td>
+                        <td className="text-green-400 py-3 font-medium">${((saldo as Record<string, unknown>).monto as number).toLocaleString()}</td>
                         <td className="text-gray-400 py-3">
-                          {new Date(saldo.updated_at || saldo.created_at || '').toLocaleDateString()}
+                          {new Date((saldo as Record<string, unknown>).updated_at as string || (saldo as Record<string, unknown>).created_at as string || '').toLocaleDateString()}
                         </td>
                         {user && (
                           <td className="py-3">
                             <button
-                              onClick={() => handleEliminarSaldo(saldo.id)}
+                              onClick={handleEliminarSaldo}
                               className="text-red-400 hover:text-red-300 text-sm"
                             >
                               Eliminar
@@ -206,17 +163,17 @@ export default function GestionPagos() {
                 </thead>
                 <tbody>
                   {pagosWebPaginados.length > 0 ? (
-                    pagosWebPaginados.map((pago: any) => (
-                      <tr key={pago.id} className="border-b border-gray-800">
-                        <td className="text-white py-3 font-medium">${pago.monto.toLocaleString()}</td>
-                        <td className="text-gray-400 py-3">{pago.descripcion || 'Sin descripción'}</td>
+                    pagosWebPaginados.map((pago: unknown) => (
+                      <tr key={(pago as Record<string, unknown>).id as string} className="border-b border-gray-800">
+                        <td className="text-white py-3 font-medium">${((pago as Record<string, unknown>).monto as number).toLocaleString()}</td>
+                        <td className="text-gray-400 py-3">{(pago as Record<string, unknown>).descripcion as string || 'Sin descripción'}</td>
                         <td className="text-gray-400 py-3">
-                          {new Date(pago.fecha).toLocaleDateString()}
+                          {new Date((pago as Record<string, unknown>).fecha as string).toLocaleDateString()}
                         </td>
                         {user && (
                           <td className="py-3">
                             <button
-                              onClick={() => handleEliminarPagoWeb(pago.id)}
+                              onClick={handleEliminarPagoWeb}
                               className="text-red-400 hover:text-red-300 text-sm"
                             >
                               Eliminar
@@ -282,18 +239,18 @@ export default function GestionPagos() {
               </thead>
               <tbody>
                 {historialPaginado.length > 0 ? (
-                  historialPaginado.map((pago: any) => (
-                    <tr key={pago.id} className="border-b border-gray-800">
-                      <td className="text-white py-3">{pago.remitente_nombre || pago.remitente_id}</td>
-                      <td className="text-white py-3 font-medium">${pago.monto.toLocaleString()}</td>
+                  historialPaginado.map((pago: unknown) => (
+                    <tr key={(pago as Record<string, unknown>).id as string} className="border-b border-gray-800">
+                      <td className="text-white py-3">{(pago as Record<string, unknown>).remitente_nombre as string || (pago as Record<string, unknown>).remitente_id as string}</td>
+                      <td className="text-white py-3 font-medium">${((pago as Record<string, unknown>).monto as number).toLocaleString()}</td>
                       <td className="text-gray-400 py-3">
-                        {new Date(pago.fecha_creacion).toLocaleDateString()}
+                        {new Date((pago as Record<string, unknown>).fecha_creacion as string).toLocaleDateString()}
                       </td>
-                      <td className="text-gray-400 py-3">#{pago.pago_id}</td>
+                      <td className="text-gray-400 py-3">#{(pago as Record<string, unknown>).pago_id as string}</td>
                       {user && (
                         <td className="py-3">
                           <button
-                            onClick={() => handleEliminarHistorial(pago.id)}
+                            onClick={handleEliminarHistorial}
                             className="text-red-400 hover:text-red-300 text-sm"
                           >
                             Eliminar

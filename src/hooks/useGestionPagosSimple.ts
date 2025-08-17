@@ -1,8 +1,14 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 
+interface DatosGestion {
+  saldos: unknown[];
+  historial: unknown[];
+  pagos: unknown[];
+}
+
 export function useGestionPagosSimple(aplicacion: string) {
-  const [datos, setDatos] = useState<any>({ saldos: [], historial: [], pagos: [] });
+  const [datos, setDatos] = useState<DatosGestion>({ saldos: [], historial: [], pagos: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,14 +42,14 @@ export function useGestionPagosSimple(aplicacion: string) {
         console.log(`Buscando aplicación: "${valorBusqueda}" (ruta: ${aplicacion})`);
         
         // Filtrar por aplicación exacta
-        const saldosFiltrados = (saldos.data || []).filter((s: any) => 
-          s.aplicacion === valorBusqueda
+        const saldosFiltrados = (saldos.data || []).filter((s: unknown) => 
+          (s as Record<string, unknown>).aplicacion === valorBusqueda
         );
-        const historialFiltrado = (historial.data || []).filter((h: any) => 
-          h.aplicacion === valorBusqueda
+        const historialFiltrado = (historial.data || []).filter((h: unknown) => 
+          (h as Record<string, unknown>).aplicacion === valorBusqueda
         );
-        const pagosFiltrados = (pagos.data || []).filter((p: any) => 
-          p.aplicacion === valorBusqueda
+        const pagosFiltrados = (pagos.data || []).filter((p: unknown) => 
+          (p as Record<string, unknown>).aplicacion === valorBusqueda
         );
         
         console.log('Datos filtrados:', {
@@ -58,9 +64,9 @@ export function useGestionPagosSimple(aplicacion: string) {
           pagos: pagosFiltrados
         });
         
-      } catch (err: any) {
+      } catch (err) {
         console.error('Error:', err);
-        setError(err.message);
+        setError(err instanceof Error ? err.message : 'Error desconocido');
       } finally {
         setLoading(false);
       }

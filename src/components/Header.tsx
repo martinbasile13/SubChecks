@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/lib/supabase';
 
@@ -23,7 +24,7 @@ export default function Header() {
   const [aplicacionSaldo, setAplicacionSaldo] = useState('');
   const [usuarioDestinatario, setUsuarioDestinatario] = useState('');
   const [montoSaldo, setMontoSaldo] = useState('');
-  const [usuarios, setUsuarios] = useState<any[]>([]);
+  const [usuarios, setUsuarios] = useState<unknown[]>([]);
   const [showAddUser, setShowAddUser] = useState(false);
   const [nuevoUsuarioNombre, setNuevoUsuarioNombre] = useState('');
 
@@ -102,12 +103,12 @@ export default function Header() {
       
       if (usuarioDestinatario.startsWith('manual_')) {
         // Para usuarios manuales, usar el nombre
-        const usuario = usuarios.find(u => u.id === usuarioDestinatario);
-        usuarioNombre = usuario?.email || usuarioDestinatario; // email contiene el nombre
+        const usuario = usuarios.find(u => (u as Record<string, unknown>).id === usuarioDestinatario);
+        usuarioNombre = (usuario as Record<string, unknown>)?.email as string || usuarioDestinatario; // email contiene el nombre
       } else {
         // Para usuarios existentes, obtener el nombre desde la lista de usuarios
-        const usuario = usuarios.find(u => u.id === usuarioDestinatario);
-        usuarioNombre = usuario?.email || usuarioDestinatario;
+        const usuario = usuarios.find(u => (u as Record<string, unknown>).id === usuarioDestinatario);
+        usuarioNombre = (usuario as Record<string, unknown>)?.email as string || usuarioDestinatario;
       }
 
       // 1. Solo agregar a historial_pagos (NO a la tabla pagos)
@@ -343,9 +344,9 @@ export default function Header() {
             
             {/* Logo */}
             <div>
-              <a href="/" className="text-2xl font-bold text-white hover:text-gray-300 transition-colors">
+              <Link href="/" className="text-2xl font-bold text-white hover:text-gray-300 transition-colors">
                 SubChecks
-              </a>
+              </Link>
             </div>
 
             {/* Usuario logueado o botones de auth */}
@@ -627,8 +628,8 @@ export default function Header() {
                           >
                             <option value="">Selecciona quién hizo el pago</option>
                             {usuarios.map((usuario) => (
-                              <option key={usuario.id} value={usuario.id}>
-                                {usuario.email}
+                              <option key={(usuario as Record<string, unknown>).id as string} value={(usuario as Record<string, unknown>).id as string}>
+                                {(usuario as Record<string, unknown>).email as string}
                               </option>
                             ))}
                           </select>
